@@ -10,41 +10,36 @@ d:
 	dw 5
 e:
 	dd 15
-first:
-	dw 1
-second:
-	dw 1
-third:
-	dw 1
 answer:
-	dw 1
+	dq 1
 
 section .text
 global _start
 _start:
-	mov rax, [a]
+	mov eax, [a]
 	mul dword [c]
 	div word [b]
-	mov [first], rax
+	mov ecx, eax
 
-	mov rax, [d]
+	movzx eax, word [d]
 	mul word [b]
 	div dword [e]
-	mov [second], rax
+	mov esi, eax
 
-	mov rax, [c]
+	mov eax, [c]
 	mul dword [c]
-	mov [third], rax
-	mov rax, [a]
+	mov edi, eax
+	mov eax, [a]
 	mul word [d]
-	mov rbx, rax
-	mov rax, [third]
+	mov ebx, eax
+	mov eax, edi
 	div ebx
-	mov rbx, [second]
-	sub rbx, rax
-	add rbx, [first]
+	mov ebx, esi
+	sub ebx, eax
+	add ebx, ecx
+	mov [answer], ebx
 
 	jmp exit
 exit:
-	mov rax, 1
+	mov eax, 1
 	int 0x80
