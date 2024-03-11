@@ -1,13 +1,13 @@
 section .data
 
 a:
-	dd 3
+	dd -1
 b:
 	dw 6
 c:
 	dd 4
 d:
-	dw 5
+	dw -5
 e:
 	dd 15
 answer:
@@ -16,30 +16,42 @@ answer:
 section .text
 global _start
 _start:
-	mov eax, [a]
-	mul dword [c]
-	div word [b]
-	mov ecx, eax
+	;first term
+	movsx rax, dword [a]
+	imul dword [c]
+	idiv dword [b]
+	movsx rcx, eax
 
-	movzx eax, word [d]
-	mul word [b]
-	div dword [e]
-	mov esi, eax
+	;second term
+	movsx rax, word [d]
+	imul word [b]
+	idiv word [e]
+	movsx rsi, eax
 
-	mov eax, [c]
-	mul dword [c]
-	mov edi, eax
-	mov eax, [a]
-	mul word [d]
-	mov ebx, eax
-	mov eax, edi
-	div ebx
-	mov ebx, esi
+	;third term
+	movsx rax, dword [c]
+	imul word [c]
+	movsx rdi, eax
+	movsx rax, dword [a]
+	imul word [d]
+	movsx rbx, eax
+	movsx rax, edi
+	idiv bx
+
+	;adding up all terms
+	movsx rbx, esi
 	sub ebx, eax
+	js incorrect_sub
+	jmp adding
+adding:
 	add ebx, ecx
-	mov [answer], ebx
+	mov [answer], rbx
 
 	jmp exit
+incorrect_sub:
+	movsx rdi, ebx
+	mov rbx, rdi
+	jmp adding
 exit:
 	mov eax, 1
 	int 0x80
