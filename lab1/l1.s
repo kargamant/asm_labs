@@ -18,9 +18,9 @@ global _start
 _start:
 	;first term
 	movsx rax, dword [a]
-	imul dword [c]
-	idiv dword [b]
-	movsx rcx, eax
+	imul word [c]
+	idiv word [b]
+	movsx rcx, ax
 
 	;second term
 	movsx rax, word [d]
@@ -30,28 +30,21 @@ _start:
 
 	;third term
 	movsx rax, dword [c]
-	imul word [c]
+	imul dword [c]
 	movsx rdi, eax
 	movsx rax, dword [a]
 	imul word [d]
-	movsx rbx, eax
+	movsx rbx, ax
 	movsx rax, edi
-	idiv bx
+	idiv rbx
 
 	;adding up all terms
 	movsx rbx, esi
-	sub ebx, eax
-	js incorrect_sub
-	jmp adding
-adding:
-	add ebx, ecx
+	sub rbx, rax
+	add rbx, rcx
 	mov [answer], rbx
 
 	jmp exit
-incorrect_sub:
-	movsx rdi, ebx
-	mov rbx, rdi
-	jmp adding
 exit:
 	mov eax, 1
 	int 0x80
