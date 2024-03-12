@@ -1,15 +1,15 @@
 section .data
 
 a:
-	dd -1
+	dd -2
 b:
 	dw 6
 c:
-	dd 4
+	dd 327
 d:
-	dw -5
+	dw 115
 e:
-	dd 15
+	dd -15
 answer:
 	dq 1
 
@@ -18,30 +18,37 @@ global _start
 _start:
 	;first term
 	movsx rax, dword [a]
-	imul word [c]
-	idiv word [b]
-	movsx rcx, ax
+	movsx rsi, dword [c]
+	movsx rdi, word [b]
+	imul rsi
+	cqo
+	idiv rdi
+	push rax
 
 	;second term
 	movsx rax, word [d]
-	imul word [b]
-	idiv word [e]
-	movsx rsi, eax
+	movsx rsi, word [b]
+	movsx rdi, dword [e]
+	imul rsi
+	cqo
+	idiv rdi
+	push rax
 
 	;third term
 	movsx rax, dword [c]
-	imul dword [c]
-	movsx rdi, eax
-	movsx rax, dword [a]
-	imul word [d]
-	movsx rbx, ax
-	movsx rax, edi
-	idiv rbx
+	imul rax
+	movsx rsi, dword [a]
+	movsx rdi, word [d]
+	cqo
+	idiv rsi
+	cqo
+	idiv rdi
 
 	;adding up all terms
-	movsx rbx, esi
+	pop rbx
 	sub rbx, rax
-	add rbx, rcx
+	pop rax
+	add rbx, rax
 	mov [answer], rbx
 
 	jmp exit
