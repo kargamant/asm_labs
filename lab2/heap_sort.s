@@ -1,21 +1,40 @@
 section .data
 n:
-	dd 10
+	dd 3
 mas:
-	dd 8, 7, 1, 9, 5, 2, 6, 0, 4, 3
-
+	dd 0, 0, 0
+	;255, -7, 33, -9, 5, 25, 0, -9, 1, 3
 section .text
 global _start
 
 _start:
 	mov eax, [n]
 	mov ebx, mas
+	cmp eax, 2
+	je two_elements
+	cmp eax, 1
+	je end
 	mov ebp, 2
 	div ebp
 	mov ecx, eax
 	dec ecx
 	mov r10d, [n]
+	cmp eax, 3
+	jne inct
 	jmp building_heap
+inct:
+	inc ecx
+	jmp building_heap
+two_elements:
+	mov edi, [rbx]
+	cmp edi, [rbx+4]
+	jg change
+	jmp end
+change:
+	xchg edi, [rbx+4]
+	mov [rbx], edi
+	jmp end
+
 ;ebx is an array, eax is n and edi is i
 ;esi - largest
 heapify:
@@ -103,3 +122,7 @@ sorting:
 	jmp heapify
 sort_iter:
 	loop sorting
+end:
+	mov eax, 60
+	mov edi, 0
+	syscall
