@@ -1,15 +1,15 @@
 section .data
 
 a:
-	dd 691
+	dd 2
 b:
-	dw -321
+	dw 2
 c:
-	dd 621
+	dd 2
 d:
-	dw 946
+	dw 2
 e:
-	dd -654
+	dd 2
 answer:
 	dq 1
 
@@ -66,14 +66,15 @@ _start:
 
 	jmp exit
 zero_division:
-	mov rbx, 1
-	mov rax, 1
-	int 0x80
+	mov rdi, 1
+	mov rax, 60
+	syscall
 overflow:
-	mov rbx, 2
-	mov rax, 1
-	int 0x80
+	mov rdi, 2
+	mov rax, 60
+	syscall
 exit:
-	mov rax, 1
-	int 0x80
+	mov rdi, rbx
+	mov rax, 60
+	syscall
 
