@@ -25,7 +25,10 @@ matr_iteration:
 	add r12, r11
 	add r12, r11
 	mov ebx, r12d
-	cmp r11, 0
+	cmp r11, -1
+	mov eax, [m]
+	mov r9, 0
+	mov r8, 0
 	jne heap_sort
 	jmp end
 heap_sort:
@@ -77,6 +80,7 @@ check_left_ind:
 	pop rax
 	mul r10
 	mov ebp, [rbx+4*rax] ;left neighbour
+	div r10
 	push rax
 	mov rax, rsi
 	mul r10
@@ -104,6 +108,7 @@ check_right_ind:
 	pop rax
 	mul r10
 	mov ebp, [rbx+4*rax] ;right neighbour
+	div r10
 	push rax
 	mov rax, rsi
 	mul r10
@@ -127,7 +132,9 @@ step:
 	mul r10
 	mov edx, [rbx+4*rax]
 	mov rax, rsi
+	push rdx
 	mul r10
+	pop rdx
 	mov [rbx+4*rax], edx
 	mov rax, rdi
 	mul r10
@@ -165,6 +172,7 @@ sorting:
 	jmp heapify
 sort_iter:
 	loop sorting
+	jmp matr_iteration
 end:
 	mov eax, 60
 	mov edi, 0
