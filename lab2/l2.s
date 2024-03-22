@@ -2,13 +2,13 @@ section .data
 m:
 	dd 5
 n:
-	dd 3
+	dd 5
 matr:
-	dd 2, 6, 2
-	dd 4, 7, 1
-	dd 8, 1, 2
-	dd 3, 7, 9
-	dd 7, 4, 8
+	dd 2, 6, 2, 0, 55, 
+	dd 4, 7, 1, -10, 9,
+	dd 8, 1, 2, 33, -33,
+	dd 3, 7, 9, 4, -10,
+	dd 7, 4, 8, 10, 5
 
 section .text
 global _start
@@ -50,7 +50,7 @@ inct:
 	inc ecx
 	jmp building_heap
 two_elements:
-	mov edi, [rbx]
+	movsx edi, word [rbx]
 	cmp edi, [rbx+4*rax]
 	jg change
 	jmp matr_iteration
@@ -79,7 +79,7 @@ check_left_ind:
 	;counitng index
 	pop rax
 	mul r10
-	mov ebp, [rbx+4*rax] ;left neighbour
+	movsx ebp, word [rbx+4*rax] ;left neighbour
 	div r10
 	push rax
 	mov rax, rsi
@@ -107,7 +107,7 @@ check_right_ind:
 	;counting index
 	pop rax
 	mul r10
-	mov ebp, [rbx+4*rax] ;right neighbour
+	movsx ebp, word [rbx+4*rax] ;right neighbour
 	div r10
 	push rax
 	mov rax, rsi
@@ -127,10 +127,10 @@ step:
 	;swap
 	mov rax, rsi
 	mul r10
-	mov ebp, [rbx+4*rax]
+	movsx ebp, word [rbx+4*rax]
 	mov rax, rdi
 	mul r10
-	mov edx, [rbx+4*rax]
+	movsx edx, word [rbx+4*rax]
 	mov rax, rsi
 	push rdx
 	mul r10
@@ -156,6 +156,7 @@ next:
 	mov r9, 1
 	jmp building_heap
 end_loop:	
+	mov eax, [m]
 	mov ecx, eax
 	dec ecx
 sorting:
@@ -164,7 +165,7 @@ sorting:
 	mov ebp, [rbx]
 	mov rax, rcx
 	mul r10
-	mov edx, [rbx+4*rax]
+	movsx edx, word [rbx+4*rax]
 	mov [rbx], edx
 	mov [rbx+4*rax], ebp
 	mov edi, 0
