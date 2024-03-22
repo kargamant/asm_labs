@@ -1,14 +1,21 @@
 section .data
 m:
-	dd 5
+	dd 1
 n:
 	dd 5
 matr:
 	dd 2, 6, 2, 0, 55, 
-	dd 4, 7, 1, -10, 9,
-	dd 8, 1, 2, 33, -33,
-	dd 3, 7, 9, 4, -10,
-	dd 7, 4, 8, 10, 5
+
+;5 on 2 test
+;	2, 6, 2, 0, 55, 
+;	4, 7, 1, -10, 9,
+
+;5 on 5 test
+;	2, 6, 2, 0, 55,
+;        4, 7, 1, -10, 9
+;	8, 1, 2, 33, -33
+;        3, 7, 9, 4, -10
+;        7, 4, 8, 10, 5
 
 section .text
 global _start
@@ -51,6 +58,7 @@ inct:
 	jmp building_heap
 two_elements:
 	movsx edi, word [rbx]
+	mov eax, [n]
 	cmp edi, [rbx+4*rax]
 	jg change
 	jmp matr_iteration
