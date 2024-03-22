@@ -1,9 +1,10 @@
 section .data
 n:
-	dd 3
+	dd 10
 mas:
-	dd 0, 0, 0
+	dd 255, -7, 33, -9, 5, 25, 0, -9, 1, 3
 	;255, -7, 33, -9, 5, 25, 0, -9, 1, 3
+	;5, -9, 0
 section .text
 global _start
 
@@ -19,8 +20,9 @@ _start:
 	mov ecx, eax
 	dec ecx
 	mov r10d, [n]
+	mov eax, [n]
 	cmp eax, 3
-	jne inct
+	je inct
 	jmp building_heap
 inct:
 	inc ecx
