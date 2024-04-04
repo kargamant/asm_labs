@@ -14,8 +14,8 @@ section .text
 global _start
 
 _start:
-	jmp env_params_search
-	;jmp exit 
+	call env_params_search
+	jmp exit 
 	;TO REMOVE!!!!!!!!!!!!!!!!!!
 	call read
 	mov r9, rax
@@ -36,33 +36,17 @@ exit:
 env_params_search:	
 	mov rcx, 64
 print_params:
-	lea r13, [rsp+8*rcx]
-	mov r11, 0
-	push rcx
-	mov r8, 0
-iterating_chars:
-	mov r12b, byte [r13+r11]
-	cmp r12, 0
-	je replace
-	jmp next
-replace:
-	mov r12, 10
-	mov r8, 1
-next:
-	mov [param], r12b
+	mov r13, [rsp+rcx*8]
 	mov rax, 1
 	mov rdi, 1
-	mov rsi, param
-	mov rdx, 1
-	push r11
+	mov rsi, r13
+	mov rdx, 100
+	push rcx
 	syscall
-	pop r11
-	inc r11
-	cmp r8, 0
-	je iterating_chars
 	pop rcx
+
 	loop print_params
-	jmp exit
+	ret
 
 print_nline:
 	mov rax, 1
