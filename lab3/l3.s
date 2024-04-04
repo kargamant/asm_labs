@@ -3,11 +3,20 @@ buffin:
 	db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 buffout:
 	db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+shift:
+	dq 0
+file_name:
+	db 'hello.txt'
+param:
+	db 0
 
 section .text
 global _start
 
 _start:
+	jmp env_params_search
+	;jmp exit 
+	;TO REMOVE!!!!!!!!!!!!!!!!!!
 	call read
 	mov r9, rax
 	cmp rax, 0
@@ -24,6 +33,44 @@ exit:
 	mov rdi, 0
 	syscall
 
+env_params_search:	
+	mov rcx, 64
+print_params:
+	lea r13, [rsp+8*rcx]
+	mov r11, 0
+	push rcx
+	mov r8, 0
+iterating_chars:
+	mov r12b, byte [r13+r11]
+	cmp r12, 0
+	je replace
+	jmp next
+replace:
+	mov r12, 10
+	mov r8, 1
+next:
+	mov [param], r12b
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, param
+	mov rdx, 1
+	push r11
+	syscall
+	pop r11
+	inc r11
+	cmp r8, 0
+	je iterating_chars
+	pop rcx
+	loop print_params
+	jmp exit
+
+print_nline:
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, 10
+	mov rdx, 1
+	syscall
+	ret
 
 read:
 	mov rax, 0
