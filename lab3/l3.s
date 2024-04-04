@@ -38,23 +38,48 @@ process:
 	mov rcx, rdi
 cipher:
 	mov r8b, byte [buffin+rcx]
-	cmp r8b, 32
-	je continue
-	cmp r8b, 10
-	je continue
-	add r8b, sil ;shifting
+	cmp r8b, 65
+	jl continue
+	cmp r8b, 90
+	jg is_small_letter
+	
+	add r8b, sil
+	mov rax, r8
+	mov r10, 65
+	xor rdx, rdx
+	div r10
+	mov r10, 26
+	mov rax, rdx
+	xor rdx, rdx
+	div r10
+	mov r8b, dl
+	add r8b, 65
+	jmp continue
+
+is_small_letter:
+	cmp r8b, 97
+	jl continue
+	
+	add r8b, sil
+	mov rax, r8
+	mov r10, 97
+	xor rdx, rdx
+	div r10
+	mov r10, 26
+	mov rax, rdx
+	xor rdx, rdx
+	div r10
+	mov r8b, dl
+	add r8b, 97
 continue:
 	mov [buffout+rcx], r8b
-	loop cipher
-	mov r8b, byte [buffin]
-	cmp r8b, 32
+	dec rcx
+	cmp rcx, -1
 	je process_end
-	cmp r8b, 10
-	je process_end
-	add r8b, sil
+	jmp cipher
 	
 process_end:
-	mov [buffout], r8b
+	;mov [buffout], r8b
 	ret
 
 
