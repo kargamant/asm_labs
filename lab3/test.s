@@ -14,12 +14,10 @@ section .text
 global _start
 
 _start:
-	;call env_params_search
-	;jmp exit 
+	call env_params_search
+	jmp exit 
 	;TO REMOVE!!!!!!!!!!!!!!!!!!
-
 	call read
-	add r14, r9		
 	mov r9, rax
 	cmp rax, 0
 	je exit
@@ -34,6 +32,21 @@ exit:
 	mov rax, 60
 	mov rdi, 0
 	syscall
+
+env_params_search:	
+	mov rcx, 64
+print_params:
+	mov r13, [rsp+rcx*8]
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, r13
+	mov rdx, 100
+	push rcx
+	syscall
+	pop rcx
+
+	loop print_params
+	ret
 
 print_nline:
 	mov rax, 1
@@ -95,36 +108,18 @@ continue:
 	cmp rcx, -1
 	je process_end
 	jmp cipher
-	;movs stos	
+	
 process_end:
 	;mov [buffout], r8b
 	ret
 
 
 write:
-		
-	;opening file
-	mov rax, 2
-	mov rdi, file_name
-	mov rsi, 1
-	syscall
-	mov r15, rax
-
-	mov rax, 8
-	mov rdi, r15
-	mov rsi, r14
-	mov rdx, 1
-	syscall
-
+	;mov byte [buffout+r9], 10
 	mov rax, 1
-	mov rdi, r15
+	mov rdi, 1
 	mov rsi, buffout
 	mov rdx, r9
 	;inc rdx
 	syscall
-
-	mov rax, 3
-	mov rdi, r15
-	syscall
-
 	ret
