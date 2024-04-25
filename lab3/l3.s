@@ -5,9 +5,15 @@ buffout:
 	db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 shift:
 	dq 0
-file_name:
+file:
 	db 'hello.txt'
 param:
+	db 0
+ceasar_shift:
+	db 'ceasar_shift='
+file_name:
+	db 'file_name='
+shift:
 	db 0
 
 section .text
@@ -34,6 +40,24 @@ exit:
 	mov rax, 60
 	mov rdi, 0
 	syscall
+
+env_params:
+	mov rcx, [rsp]
+find:
+	push rcx
+	mov rdi, [rsp+rcx*8+16]	
+	mov rsi, ceasar_shift
+	mov rcx, 13
+	repe cmpsb
+	je parse
+	pop rcx
+	inc rcx	
+parse:
+	pop rcx
+	lea rsi, [rsp+rcx*8+16]
+	;use movsb		
+	
+	;rsp+(args+2)*8
 
 print_nline:
 	mov rax, 1
@@ -105,7 +129,7 @@ write:
 		
 	;opening file
 	mov rax, 2
-	mov rdi, file_name
+	mov rdi, file
 	mov rsi, 1
 	syscall
 	mov r15, rax
