@@ -106,6 +106,15 @@ main:
 	mov rax, 1
 	call printf
 
+	movsd xmm0, [rbp-x]
+	call atan
+	
+	mov rdi, out_arctg
+	mov rax, 1
+	call printf
+	
 	mov rdi, 0
 	push rdi
 	call exit
+
+
