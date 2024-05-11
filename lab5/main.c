@@ -31,8 +31,9 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	unsigned char* result=rotate_image_c(image, w, h, ch, atoi(argv[3]));
-	int res=stbi_write_jpg(argv[2], w, h, ch, result, 100);
+	RotatedImg* result=rotate_image_c(image, w, h, ch, atoi(argv[3]));
+	int res=stbi_write_jpg(argv[2], result->w, result->h, result->ch, result->data, 100);
+	free(result->data);
 	free(result);
 	stbi_image_free(image);
 	return 0;
