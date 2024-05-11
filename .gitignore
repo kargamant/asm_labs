@@ -1,3 +1,4 @@
 *.o
 build/
 exp/
+stb_image_sources/
