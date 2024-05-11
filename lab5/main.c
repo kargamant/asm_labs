@@ -4,6 +4,7 @@
 #include "stb_image_sources/stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_sources/stb/stb_image_write.h"
+#include "image_rotation.h"
 
 int main(int argc, char* argv[])
 {
@@ -18,6 +19,11 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "Error. No output filename was specified.\n");
 		return 1;
 	}
+	else if(argc==3)
+	{
+		fprintf(stderr, "Error. No angle was specified.\n");
+		return 1;
+	}
 	unsigned char* image=stbi_load(argv[1], &w, &h, &ch, 0);
 	if(image==NULL)
 	{
@@ -25,8 +31,9 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	int res=stbi_write_jpg(argv[2], w, h, ch, image, 100);
-	//printf("res:%d\n", res);
+	unsigned char* result=rotate_image_c(image, w, h, ch, atoi(argv[3]));
+	int res=stbi_write_jpg(argv[2], w, h, ch, result, 100);
+	free(result);
 	stbi_image_free(image);
 	return 0;
 }
