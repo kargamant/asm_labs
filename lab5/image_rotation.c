@@ -39,16 +39,22 @@ RotatedImg* rotate_image_c(unsigned char* img, int w, int h, int ch, int angle)
 		int y=((pixel-img)/ch)/w;
 		int new_x=x*cos(radians)-y*sin(radians);
 		int new_y=x*sin(radians)+y*cos(radians);
-		/*if(cos(radians)!=(int)cos(radians) || sin(radians)!=(int)sin(radians))
+		
+		//                         ->
+		//transporting with vector l=(h,w)
+		if((angle%180==0 || angle%90==0))
 		{
-			if(x>0) x++;
-			else x--;
-			if(y>0) y++;
-			else y--;
+			if(new_x<0) new_x+=result->w;
+			if(new_y<0) new_y+=result->h;
+		}
+		/*if((offset+result->w*new_y*ch+new_x*ch)<0)
+		{
+			if(new_x<0 && (angle%90==0 || angle%180==0)) new_x=result->w+new_x;
+			if(new_y<0 && (angle%90==0 || angle%180==0)) new_y=result->h+new_y;
+			//printf("new_x: %d, new_y: %d, x: %d, y: %d\n", new_x, new_y, x, y);
 		}*/
-		if(new_x<0 && (angle%90==0 || angle%180==0)) new_x=result->w+new_x;
-		if(new_y<0 && (angle%90==0 || angle%180==0)) new_y=result->h+new_y;
-		if(offset+result->w*new_y*ch+new_x*ch+2>new_img_size)
+
+		if((offset+result->w*new_y*ch+new_x*ch+2)>=new_img_size)
 		{
 			continue;
 		}
