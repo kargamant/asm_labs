@@ -45,12 +45,12 @@ int main(int argc, char* argv[])
 	int res=stbi_write_jpg(argv[2], result->w, result->h, result->ch, result->data, 100);
 	free(result->data);
 
-	
+		
 	//asm program
 	result->data=(unsigned char*)calloc(result->w*result->h*ch, sizeof(char));
 	
 	rotate_image_asm(image, result, w, h, ch, angle);
-
+	
 	stbi_image_free(image);
 	return 0;
 }

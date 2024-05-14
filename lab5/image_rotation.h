@@ -2,7 +2,7 @@
 
 typedef struct RotatedImg
 {
-	int w, h, ch;
+	int w, h, ch, offset;
 	unsigned char* data;
 }RotatedImg;
 //angle in degrees

@@ -7,7 +7,6 @@ RotatedImg* rotate_image_c(unsigned char* img, int w, int h, int ch, int angle)
 {
 	RotatedImg* result=(RotatedImg*)calloc(1, sizeof(RotatedImg));
 	result->ch=ch;
-	int offset=0;
 
 	if(angle%90==0 && angle%180!=0) 
 	{
@@ -23,7 +22,7 @@ RotatedImg* rotate_image_c(unsigned char* img, int w, int h, int ch, int angle)
 	{
 		result->w=4*w;
 		result->h=4*h;
-		offset=ch*(result->w/2)*(result->h/2)+ch*(result->w/2);
+		result->offset=ch*(result->w/2)*(result->h/2)+ch*(result->w/2);
 	}
 
 	
@@ -54,14 +53,14 @@ RotatedImg* rotate_image_c(unsigned char* img, int w, int h, int ch, int angle)
 			//printf("new_x: %d, new_y: %d, x: %d, y: %d\n", new_x, new_y, x, y);
 		}*/
 
-		if((offset+result->w*new_y*ch+new_x*ch+2)>=new_img_size)
+		if((result->offset+result->w*new_y*ch+new_x*ch+2)>=new_img_size)
 		{
 			continue;
 		}
 
-		*(new_img+offset+result->w*new_y*ch+new_x*ch)=img[w*y*ch+x*ch];
-		*(new_img+offset+result->w*new_y*ch+new_x*ch+1)=img[w*y*ch+x*ch+1];
-		*(new_img+offset+result->w*new_y*ch+new_x*ch+2)=img[w*y*ch+x*ch+2];
+		*(new_img+result->offset+result->w*new_y*ch+new_x*ch)=img[w*y*ch+x*ch];
+		*(new_img+result->offset+result->w*new_y*ch+new_x*ch+1)=img[w*y*ch+x*ch+1];
+		*(new_img+result->offset+result->w*new_y*ch+new_x*ch+2)=img[w*y*ch+x*ch+2];
 
 		//printf("(new_x: %d ; new_y: %d) <- (x: %d ; y: %d)\n", new_x, new_y, x, y);
 		//*new_pixel=img[w*y*ch+x*ch];
