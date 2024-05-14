@@ -32,6 +32,8 @@ const_zero:
 	dq 0.0
 const_neg:
 	dq -1.0
+const_half:
+	dq 0.5
 section .text
 
 	extern printf
@@ -158,6 +160,17 @@ turning:
 	mulsd xmm2, xmm0
 	subsd xmm1, xmm2
 	cvtsd2si r12, xmm1
+	movsd xmm2, [const_half]
+	addsd xmm1, xmm2
+	cvtsd2si r10, xmm1
+	cmp r12, r10
+	je decr12
+	jmp cont1
+decr12:
+	cmp r12, 0
+	je cont1
+	dec r12
+cont1:
 	mov [new_x], r12
 	
 
@@ -176,6 +189,16 @@ turning:
 	mulsd xmm2, xmm0
 	addsd xmm1, xmm2
 	cvtsd2si r11, xmm1
+	movsd xmm2, [const_half]
+	addsd xmm1, xmm2
+	cvtsd2si r10, xmm1
+	je decr11
+	jmp cont2
+decr11:
+	cmp r11, 0
+	je cont2
+	dec r11
+cont2:
 	mov [new_y], r11
 
 	;checking angle by 180 and 90
@@ -223,7 +246,7 @@ size_check:
 	add rax, rsi
 	add rax, 2
 	add eax, [result_offset]
-	cmp rax, [new_img_size]
+	cmp eax, dword [new_img_size]
 	jge iter
 	
 	sub rax, 2
