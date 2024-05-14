@@ -26,6 +26,8 @@ section .data
 	new_y dd 0
 cos_res:
 	db "cos: %.10lf", 10, 0
+pointer_dbg:
+	db "image_data: %p", 10, 0
 const_zero:
 	dq 0.0
 const_neg:
@@ -67,9 +69,11 @@ rotate_image_asm:
 
 	mov r10d, [rsi+12]
 	mov [result_offset], r10d
-
+	
 	mov r10, [rsi+16]
 	mov [result_data], r10
+
+
 
 	mov [w], rdx
 	mov [h], rcx
@@ -85,6 +89,10 @@ rotate_image_asm:
 	movsd xmm1, [pi_degrees]
 	divsd xmm0, xmm1
 	movsd [radians], xmm0
+
+;	mov rdi, pointer_dbg
+;	mov rsi, [image]
+;	call printf
 
 	;calculating original image size
 	mov eax, [w]
@@ -113,7 +121,7 @@ rotate_image_asm:
 	;syscall
 turning:
 	mov r15, [image]
-	add r15, [img_size]
+	add r15d, [img_size]
 	cmp rdi, r15
 	jge finish
 	
@@ -122,9 +130,7 @@ turning:
 	sub rax, [image]
 	xor rdx, rdx
 	div dword [channels]
-	xor rdx, rdx
 	div dword [w]
-	xor rdx, rdx
 	mov rax, rdx
 	mov r14, rax
 
@@ -133,9 +139,7 @@ turning:
 	sub rax, [image]
 	xor rdx, rdx
 	div dword [channels]
-	xor rdx, rdx
 	div dword [w]
-	xor rdx, rdx
 	mov r13, rax
 	
 	;calcing new_x
@@ -154,6 +158,7 @@ turning:
 	subsd xmm1, xmm2
 	cvtsd2si r12, xmm1
 	mov [new_x], r12
+	
 
 	;calcing new_y
 	movsd xmm0, [radians]
@@ -173,17 +178,18 @@ turning:
 	mov [new_y], r11
 
 	;checking angle by 180 and 90
-	mov rax, [angle]
-	mov rsi, 180
+	mov eax, [angle]
+	mov esi, 180
 	xor rdx, rdx
-	div rsi
-	cmp rdx, 0
+	div esi
+	cmp edx, 0
 	je transport
-	mov rax, [angle]
-	mov rsi, 90
 	xor rdx, rdx
-	div rsi
-	cmp rdx, 0
+	mov eax, [angle]
+	mov esi, 90
+	xor rdx, rdx
+	div esi
+	cmp edx, 0
 	je transport
 	jmp size_check
 transport:
@@ -204,14 +210,14 @@ inv_y:
 	mov [new_y], rax
 size_check:
 	mov eax, [result_w]
-	movsx esi, word [new_y]
-	mul esi
+	movsx rsi, dword [new_y]
+	imul rsi
 	mov esi, [channels]
-	mul esi
+	imul rsi
 	push rax
-	movsx eax, word [new_x]
+	movsx rax, dword [new_x]
 	mov esi, [channels]
-	mul esi
+	imul rsi
 	pop rsi
 	add rax, rsi
 	add rax, 2
@@ -219,62 +225,71 @@ size_check:
 	cmp rax, [new_img_size]
 	jge iter
 	
+	sub rax, 2
 	add rax, [result_data]
-	add rax, 14
 
 	;the actual pixel change
 	push rax
-	mov rax, [w]
-	mov rdi, [channels]
-	mul rdi
-	mul r13
+	mov eax, [w]
+	mov esi, [channels]
+	mul esi
+	mul r13d
 	push rax
-	mov rax, [channels]
-	mul r14
-	pop rdi
-	add rax, rdi
-	add rax, 16
+	mov eax, [channels]
+	mul r14d
+	pop rsi
+	add rax, rsi
 	add rax, [image]
-	mov rsi, [rax]
+	mov rsi, rax
 	pop rax
-	mov [rax], rsi
 
-	sub rax, 8
+	mov bl, [rsi+2]
+	mov [rax+2], bl
+	
+	mov bl, [rsi+1]
+	mov [rax+1], bl
 
-	push rax
-	mov rax, [w]
-	mov rdi, [channels]
-	mul rdi
-	mul r13
-	push rax
-	mov rax, [channels]
-	mul r14
-	pop rdi
-	add rax, rdi
-	add rax, 8
-	add rax, [image]
-	mov rsi, [rax]
-	pop rax
-	mov [rax], rsi
+	mov bl, [rsi]
+	mov [rax], bl
 
-	sub rax, 8
-
-	push rax
-	mov rax, [w]
-	mov rdi, [channels]
-	mul rdi
-	mul r13
-	push rax
-	mov rax, [channels]
-	mul r14
-	pop rdi
-	add rax, rdi
-	add rax, [image]
-	mov rsi, [rax]
-	pop rax
-	mov [rax], rsi
+;	push rax
+;	mov rax, [w]
+;	mov rdi, [channels]
+;	mul rdi
+;	mul r13
+;	push rax
+;	mov rax, [channels]
+;	mul r14
+;	pop rdi
+;	add rax, rdi
+;	add rax, [image]
+;	mov sil, [rax+1]
+;	pop rax
+;	mov [rax+1], sil
+;
+;	push rax
+;	mov rax, [w]
+;	mov rdi, [channels]
+;	mul rdi
+;	mul r13
+;	push rax
+;	mov rax, [channels]
+;	mul r14
+;	pop rdi
+;	add rax, rdi
+;	add rax, [image]
+;	mov sil, [rax]
+;	pop rax
+;	mov [rax], sil
 iter:
-	add rdi, [channels]
+;	mov rax, 0
+;	mov rsi, 0
+;	mov eax, [channels]
+;	mov esi, 8
+;	mul esi
+	xor rax, rax
+	mov eax, [channels]
+	add rdi, rax
 	jmp turning
 finish:
 	ret

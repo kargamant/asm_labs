@@ -6,6 +6,7 @@
 #include "stb_image_sources/stb/stb_image_write.h"
 #include "image_rotation.h"
 #include <time.h>
+#include <stddef.h>
 
 int main(int argc, char* argv[])
 {
@@ -46,18 +47,20 @@ int main(int argc, char* argv[])
 	//asm program
 	result->data=(unsigned char*)calloc(result->w*result->h*ch, sizeof(char));
 	
-	printf("w: %d\n", result->w);
-	printf("h: %d\n", result->h);
-	printf("ch: %d\n", result->ch);
-	printf("offset: %d\n", result->offset);
-	printf("data: %p\n", result->data);
-
+	printf("w: %d, offsetof: %d\n", result->w, offsetof(RotatedImg, w));
+	printf("h: %d, offsetof: %d\n", result->h, offsetof(RotatedImg, h));
+	printf("ch: %d, offsetof: %d\n", result->ch, offsetof(RotatedImg, ch));
+	printf("offset: %d, offsetof: %d\n", result->offset, offsetof(RotatedImg, offset));
+	printf("data: %p, offsetof: %d\n", result->data, offsetof(RotatedImg, data));
+	printf("image: %p\n", image);
+	
+	
 	start=clock();
 	rotate_image_asm(image, result, w, h, ch, angle);
 	finish=clock();
 	printf("Asm prog time: %ld milliseconds\n", ((finish-start)*1000)/CLOCKS_PER_SEC);
 	
-
+	//stbi_write_jpg(argv[2], w, h, ch, image, 100);
 	//writing result
 	int res=stbi_write_jpg(argv[2], result->w, result->h, result->ch, result->data, 100);
 
