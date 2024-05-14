@@ -46,9 +46,15 @@ int main(int argc, char* argv[])
 	free(result->data);
 
 		
+
 	//asm program
 	result->data=(unsigned char*)calloc(result->w*result->h*ch, sizeof(char));
 	
+	printf("w: %d\n", result->w);
+	printf("h: %d\n", result->h);
+	printf("ch: %d\n", result->ch);
+	printf("offset: %d\n", result->offset);
+	printf("data: %p\n", result->data);
 	rotate_image_asm(image, result, w, h, ch, angle);
 	
 	stbi_image_free(image);

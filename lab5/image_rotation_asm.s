@@ -56,17 +56,17 @@ rotate_image_asm:
 
 	mov [image], rdi
 
-	mov r10, [rsi]
-	mov [result_w], r10
+	mov r10d, [rsi]
+	mov [result_w], r10d
 
-	mov r10, [rsi+4]
-	mov [result_h], r10
+	mov r10d, [rsi+4]
+	mov [result_h], r10d
 
-	mov r10, [rsi+8]
-	mov [result_ch], r10
+	mov r10d, [rsi+8]
+	mov [result_ch], r10d
 
-	mov r10, [rsi+12]
-	mov [result_offset], r10
+	mov r10d, [rsi+12]
+	mov [result_offset], r10d
 
 	mov r10, [rsi+16]
 	mov [result_data], r10
@@ -202,22 +202,24 @@ inv_y:
 	add rax, [result_h]
 	mov [new_y], rax
 size_check:
-	mov rax, [result_w]
-	mov rsi, [new_y]
-	mul rsi
-	mov rsi, [channels]
-	mul rsi
+	mov eax, [result_w]
+	movsx esi, word [new_y]
+	mul esi
+	mov esi, [channels]
+	mul esi
 	push rax
-	mov rax, [new_x]
-	mov rsi, [channels]
-	mul rsi
+	movsx eax, word [new_x]
+	mov esi, [channels]
+	mul esi
 	pop rsi
 	add rax, rsi
 	add rax, 2
-	add rax, [result_offset]
+	add eax, [result_offset]
 	cmp rax, [new_img_size]
 	jge iter
 	
+	add rax, [result_data]
+
 	;the actual pixel change
 	push rax
 	mov rax, [w]
@@ -230,6 +232,7 @@ size_check:
 	pop rdi
 	add rax, rdi
 	add rax, 2
+	add rax, [image]
 	mov rsi, [rax]
 	pop rax
 	mov [rax], rsi
@@ -247,6 +250,7 @@ size_check:
 	pop rdi
 	add rax, rdi
 	add rax, 1
+	add rax, [image]
 	mov rsi, [rax]
 	pop rax
 	mov [rax], rsi
@@ -263,6 +267,7 @@ size_check:
 	mul r14
 	pop rdi
 	add rax, rdi
+	add rax, [image]
 	mov rsi, [rax]
 	pop rax
 	mov [rax], rsi
