@@ -107,11 +107,10 @@ rotate_image_asm:
 	add r15, [img_size]
 	call turning
 	
-
-	mov rax, 60
-	mov rdi, 0
-	syscall
-
+	leave
+	;mov rax, 60
+	;mov rdi, 0
+	;syscall
 turning:
 	mov r15, [image]
 	add r15, [img_size]
@@ -123,9 +122,10 @@ turning:
 	sub rax, [image]
 	xor rdx, rdx
 	div dword [channels]
-	div dword [w]
-	mov rax, rdx
 	xor rdx, rdx
+	div dword [w]
+	xor rdx, rdx
+	mov rax, rdx
 	mov r14, rax
 
 	;calcing y - r13
@@ -133,6 +133,7 @@ turning:
 	sub rax, [image]
 	xor rdx, rdx
 	div dword [channels]
+	xor rdx, rdx
 	div dword [w]
 	xor rdx, rdx
 	mov r13, rax
@@ -219,6 +220,7 @@ size_check:
 	jge iter
 	
 	add rax, [result_data]
+	add rax, 14
 
 	;the actual pixel change
 	push rax
@@ -231,13 +233,13 @@ size_check:
 	mul r14
 	pop rdi
 	add rax, rdi
-	add rax, 2
+	add rax, 16
 	add rax, [image]
 	mov rsi, [rax]
 	pop rax
 	mov [rax], rsi
 
-	dec rax
+	sub rax, 8
 
 	push rax
 	mov rax, [w]
@@ -249,13 +251,13 @@ size_check:
 	mul r14
 	pop rdi
 	add rax, rdi
-	add rax, 1
+	add rax, 8
 	add rax, [image]
 	mov rsi, [rax]
 	pop rax
 	mov [rax], rsi
 
-	dec rax
+	sub rax, 8
 
 	push rax
 	mov rax, [w]

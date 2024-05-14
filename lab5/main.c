@@ -40,12 +40,8 @@ int main(int argc, char* argv[])
 	RotatedImg* result=rotate_image_c(image, w, h, ch, angle);
 	clock_t finish=clock();
 	printf("C prog time: %ld milliseconds\n", ((finish-start)*1000)/CLOCKS_PER_SEC);
-
-	//writing result
-	int res=stbi_write_jpg(argv[2], result->w, result->h, result->ch, result->data, 100);
 	free(result->data);
 
-		
 
 	//asm program
 	result->data=(unsigned char*)calloc(result->w*result->h*ch, sizeof(char));
@@ -55,8 +51,17 @@ int main(int argc, char* argv[])
 	printf("ch: %d\n", result->ch);
 	printf("offset: %d\n", result->offset);
 	printf("data: %p\n", result->data);
+
+	start=clock();
 	rotate_image_asm(image, result, w, h, ch, angle);
+	finish=clock();
+	printf("Asm prog time: %ld milliseconds\n", ((finish-start)*1000)/CLOCKS_PER_SEC);
 	
+
+	//writing result
+	int res=stbi_write_jpg(argv[2], result->w, result->h, result->ch, result->data, 100);
+
 	stbi_image_free(image);
+	free(result->data);
 	return 0;
 }
