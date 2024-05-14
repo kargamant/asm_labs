@@ -121,7 +121,8 @@ rotate_image_asm:
 	;syscall
 turning:
 	mov r15, [image]
-	add r15d, [img_size]
+	mov r10d, [img_size]
+	add r15, r10
 	cmp rdi, r15
 	jge finish
 	
