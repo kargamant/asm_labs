@@ -214,6 +214,14 @@ cont2:
 
 	;checking angle by 180 and 90
 	mov eax, [angle]
+	cmp r9, 0
+	jl inv_angle
+	jmp cont5
+inv_angle:
+	mov rax, r9
+	mov r10, -1
+	imul r10
+cont5:
 	mov esi, 180
 	xor rdx, rdx
 	div esi
@@ -221,6 +229,14 @@ cont2:
 	je transport
 	xor rdx, rdx
 	mov eax, [angle]
+	cmp r9, 0
+	jl inv_angle2
+	jmp cont6
+inv_angle2:
+	mov rax, r9
+	mov r10, -1
+	imul r10
+cont6:
 	mov esi, 90
 	xor rdx, rdx
 	div esi
