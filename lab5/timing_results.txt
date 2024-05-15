@@ -1,0 +1,13 @@
+./main jpgs/gagarin.jpg output.jpg 60
+-O0:
+C prog time: 358 milliseconds
+Asm prog time: 337 milliseconds
+-O1:
+C prog time: 18 milliseconds
+Asm prog time: 294 milliseconds
+-O2:
+C prog time: 18 milliseconds
+Asm prog time: 381 milliseconds
+-O3:
+C prog time: 19 milliseconds
+Asm prog time: 302 milliseconds

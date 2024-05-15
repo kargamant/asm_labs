@@ -47,12 +47,12 @@ int main(int argc, char* argv[])
 	//asm program
 	result->data=(unsigned char*)calloc(result->w*result->h*ch, sizeof(char));
 	
-	printf("w: %d, offsetof: %d\n", result->w, offsetof(RotatedImg, w));
-	printf("h: %d, offsetof: %d\n", result->h, offsetof(RotatedImg, h));
-	printf("ch: %d, offsetof: %d\n", result->ch, offsetof(RotatedImg, ch));
-	printf("offset: %d, offsetof: %d\n", result->offset, offsetof(RotatedImg, offset));
-	printf("data: %p, offsetof: %d\n", result->data, offsetof(RotatedImg, data));
-	printf("image: %p\n", image);
+//	printf("w: %d, offsetof: %d\n", result->w, offsetof(RotatedImg, w));
+//	printf("h: %d, offsetof: %d\n", result->h, offsetof(RotatedImg, h));
+//	printf("ch: %d, offsetof: %d\n", result->ch, offsetof(RotatedImg, ch));
+//	printf("offset: %d, offsetof: %d\n", result->offset, offsetof(RotatedImg, offset));
+//	printf("data: %p, offsetof: %d\n", result->data, offsetof(RotatedImg, data));
+//	printf("image: %p\n", image);
 	
 	
 	start=clock();
