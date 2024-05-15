@@ -256,9 +256,14 @@ size_check:
 	pop rsi
 	add rax, rsi
 	add rax, 2
-	add eax, [result_offset]
+
+	xor rbx, rbx
+	mov ebx, [result_offset]
+	add rax, rbx
 	cmp eax, dword [new_img_size]
 	jge iter
+
+cont3:
 ;	mov eax, [result_w]
 ;	movsx rsi, dword [new_y]
 ;	imul rsi
@@ -279,7 +284,11 @@ size_check:
 ;	jge iter
 	
 	sub rax, 2
-	add rax, [result_data]
+	cmp rax, 0
+	jl iter
+	xor rbx, rbx
+	mov rbx, [result_data]
+	add rax, rbx
 
 	;the actual pixel change
 	push rax
