@@ -22,8 +22,8 @@ section .data
 
 	temp_x dq 0.0
 	temp_y dq 0.0
-	new_x dd 0
-	new_y dd 0
+	new_x dq 0
+	new_y dq 0
 cos_res:
 	db "cos: %.10lf", 10, 0
 pointer_dbg:
@@ -33,7 +33,7 @@ const_zero:
 const_neg:
 	dq -1.0
 const_half:
-	dq 0.5
+	dq 0.4
 section .text
 
 	extern printf
@@ -148,13 +148,17 @@ turning:
 	;calcing new_x
 	movsd xmm0, [radians]
 	mov rax, 1
+	push rdi
 	call cos
+	pop rdi
 	cvtsi2sd xmm1, r14
 	mulsd xmm1, xmm0
 	movsd [temp_x], xmm1
 	movsd xmm0, [radians]
 	mov rax, 1
+	push rdi
 	call sin
+	pop rdi
 	movsd xmm1, [temp_x]
 	cvtsi2sd xmm2, r13
 	mulsd xmm2, xmm0
@@ -168,22 +172,28 @@ turning:
 	jmp cont1
 decr12:
 	cmp r12, 0
-	je cont1
+	jle cont1
 	dec r12
 cont1:
 	mov [new_x], r12
+	movsd xmm1, [const_zero]
+	movsd xmm2, [const_zero]
 	
 
 	;calcing new_y
 	movsd xmm0, [radians]
 	mov rax, 1
+	push rdi
 	call sin
+	pop rdi
 	cvtsi2sd xmm1, r14
 	mulsd xmm1, xmm0
 	movsd [temp_y], xmm1
 	movsd xmm0, [radians]
 	mov rax, 1
+	push rdi
 	call cos
+	pop rdi
 	movsd xmm1, [temp_y]
 	cvtsi2sd xmm2, r13
 	mulsd xmm2, xmm0
@@ -192,11 +202,12 @@ cont1:
 	movsd xmm2, [const_half]
 	addsd xmm1, xmm2
 	cvtsd2si r10, xmm1
+	cmp r11, r10
 	je decr11
 	jmp cont2
 decr11:
 	cmp r11, 0
-	je cont2
+	jle cont2
 	dec r11
 cont2:
 	mov [new_y], r11
@@ -248,6 +259,24 @@ size_check:
 	add eax, [result_offset]
 	cmp eax, dword [new_img_size]
 	jge iter
+;	mov eax, [result_w]
+;	movsx rsi, dword [new_y]
+;	imul rsi
+;	mov esi, [channels]
+;	imul rsi
+;	push rax
+;	movsx rax, dword [new_x]
+;	mov esi, [channels]
+;	imul rsi
+;	pop rsi
+;	add rax, rsi
+;	add rax, 2
+;
+;	;xor rbx, rbx
+;	mov ebx, [result_offset]
+;	add rax, rbx
+;	cmp rax, [new_img_size]
+;	jge iter
 	
 	sub rax, 2
 	add rax, [result_data]
